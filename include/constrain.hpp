@@ -50,7 +50,7 @@ struct Not_Null : Constraint< T, error_function > {
     }
 };
 
-template < typename T, typename error_function, unsigned int mod >
+template < typename T, typename error_function, int mod >
 struct Modulo : Constraint< T, error_function > {
     static constexpr bool has_default = true;
     static constexpr T default_value  = 0;
@@ -66,4 +66,8 @@ struct invariant_checker {
         std::cerr << func << " : " << cond << " failed" << std::endl;
         std::abort();
     }
+};
+
+struct No_Op {
+    void operator()( std::string, std::string ) {}
 };

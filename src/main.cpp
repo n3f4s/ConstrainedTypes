@@ -6,10 +6,8 @@
 using angle =
     Numeric_Type< int, Strict_Range< int, -1, 361, invariant_checker > >;
 using not_null = Numeric_Type< int, Not_Null< int, invariant_checker > >;
-// TODO : tester la contrainte Modulo
+using mod5     = Numeric_Type< int, Modulo< int, No_Op, 5 > >;
 
-// TODO : faire les constructeurs par défaut en fonction de si on peut le faire
-//          i.e. : si les contraintes le permettent
 // TODO : faire une meilleur gestion des erreurs : passer les bonnes macro
 // __FILE__ ....
 
@@ -28,5 +26,11 @@ int main()
     std::cout << "not_null : ";
     std::cin >> b;
     std::cout << b << std::endl;
+
+    mod5 c{};
+    for( auto const& elt : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ) {
+        c = elt;
+        std::cout << c << std::endl;
+    }
     return 0;
 }
