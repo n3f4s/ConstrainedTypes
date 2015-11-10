@@ -1,6 +1,8 @@
 # ContrainedTypes
 Library for defining constrained types (Ada-like constrained types)
 
+This is, for now, a exercise library. I hope it will one day become good enough to be used in real project.
+
 __For now, due to use (for the error handling) of macro defined by g++, this library
 may not work on other compiler__
 
