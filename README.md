@@ -88,4 +88,4 @@ TODO
 TODO
 
 # TODO
-check compilation on clang++ and MSVC++ (and add compilation flag for these compiler)
+check compilation MSVC++
