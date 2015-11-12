@@ -81,14 +81,11 @@ the operation that fail (with ``__FUNCTION*__`` macro) and the condition that di
 
 ## How to create error handling function
 
-<<<<<<< HEAD
-TODO
-||||||| merged common ancestors
-TODO
-=======
 TODO
 
 ## What is already defined
 
 TODO
->>>>>>> namespace added, update of README
+
+# TODO
+check compilation on clang++ and MSVC++ (and add compilation flag for these compiler)
