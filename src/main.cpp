@@ -10,12 +10,12 @@ using namespace nfs::constrained_types;
 // We create an angle type : it's a int that bounded between 0 and 360
 // however, Strict_Range exclude the bound so we use -1 and 361 as range bound
 using angle =
-    Numeric_Type< int, Strict_Range< int, -1, 361, invariant_checker > >;
+    Numeric_Type< int, Strict_Range, invariant_checker, -1, 361 >;
 // We create a type that can't be equal to 0 (cf Not_Null)
-using not_null = Numeric_Type< int, Not_Null< int, invariant_checker > >;
+using not_null = Numeric_Type< int, Not_Null, invariant_checker >;
 // We create a type that is bounded between 0 and 4.
 // But getting out of bound is not an error, it just takes N % 5.
-using mod5 = Numeric_Type< int, Modulo< int, No_Op, 5 > >;
+using mod5 = Numeric_Type< int, Modulo, No_Op, 5 >;
 
 int main()
 {

@@ -58,9 +58,9 @@ namespace constrained_types
     };
 
     template < typename T,
+               typename error_function,
                T lower_bound,
-               T upper_bound,
-               typename error_function >
+               T upper_bound >
     struct Strict_Range : Constraint< T, error_function > {
 
         static constexpr T default_value  = lower_bound + T{1};

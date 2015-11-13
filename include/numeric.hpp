@@ -10,12 +10,13 @@ namespace nfs
 {
 namespace constrained_types
 {
-    template < typename T, typename Constraint_t >
+    template < typename T, template<typename, typename, T...> class constraint_t, typename error_handle, T ...constraint_param>
     class Numeric_Type
     {
       public:
         using value_t   = T;
-        using numeric_t = Numeric_Type< T, Constraint_t >;
+        using numeric_t = Numeric_Type< T, constraint_t, error_handle, constraint_param...>;
+        using Constraint_t = constraint_t<T, error_handle, constraint_param...>;//TODO : changer l'ordre des templates dans Constraint
 
         Numeric_Type( T value ) : value_{value}
         {
@@ -38,31 +39,31 @@ namespace constrained_types
         }
 
         // inplace arithmetic operator
-        Numeric_Type& operator+=( Numeric_Type< T, Constraint_t > rhs )
+        Numeric_Type& operator+=( numeric_t rhs )
         {
             *this = inplace_op(
                 value_, rhs.value_, []( auto l, auto r ) { return l + r; } );
             return *this;
         }
-        Numeric_Type& operator*=( Numeric_Type< T, Constraint_t > rhs )
+        Numeric_Type& operator*=( numeric_t rhs )
         {
             *this = inplace_op(
                 value_, rhs.value_, []( auto l, auto r ) { return l * r; } );
             return *this;
         }
-        Numeric_Type& operator/=( Numeric_Type< T, Constraint_t > rhs )
+        Numeric_Type& operator/=( numeric_t rhs )
         {
             *this = inplace_op(
                 value_, rhs.value_, []( auto l, auto r ) { return l / r; } );
             return *this;
         }
-        Numeric_Type& operator-=( Numeric_Type< T, Constraint_t > rhs )
+        Numeric_Type& operator-=( numeric_t rhs )
         {
             *this = inplace_op(
                 value_, rhs.value_, []( auto l, auto r ) { return l - r; } );
             return *this;
         }
-        Numeric_Type& operator%=( Numeric_Type< T, Constraint_t > rhs )
+        Numeric_Type& operator%=( numeric_t rhs )
         {
             *this = inplace_op(
                 value_, rhs.value_, []( auto l, auto r ) { return l % r; } );
@@ -71,7 +72,7 @@ namespace constrained_types
 
         // Inplace bitwise operator
         Numeric_Type& operator<<=(
-            const Numeric_Type< T, Constraint_t >& count )
+            const numeric_t& count )
         {
             *this = inplace_op(
                 value_, count.value_, []( auto l, auto r ) { return l << r; } );
@@ -79,28 +80,28 @@ namespace constrained_types
         }
 
         Numeric_Type& operator>>=(
-            const Numeric_Type< T, Constraint_t >& count )
+            const numeric_t& count )
         {
             *this = inplace_op(
                 value_, count.value_, []( auto l, auto r ) { return l << r; } );
             return *this();
         }
 
-        Numeric_Type& operator&=( const Numeric_Type< T, Constraint_t >& peer )
+        Numeric_Type& operator&=( const numeric_t& peer )
         {
             *this = inplace_op(
                 value_, peer.value_, []( auto l, auto r ) { return l << r; } );
             return *this();
         }
 
-        Numeric_Type& operator^=( const Numeric_Type< T, Constraint_t >& peer )
+        Numeric_Type& operator^=( const numeric_t& peer )
         {
             *this = inplace_op(
                 value_, peer.value_, []( auto l, auto r ) { return l << r; } );
             return *this();
         }
 
-        Numeric_Type& operator|=( const Numeric_Type< T, Constraint_t >& peer )
+        Numeric_Type& operator|=( const numeric_t& peer )
         {
             *this = inplace_op(
                 value_, peer.value_, []( auto l, auto r ) { return l << r; } );
@@ -153,119 +154,119 @@ namespace constrained_types
             return Numeric_Type{~value_};
         }
 
-        Numeric_Type& operator=( const Numeric_Type< T, Constraint_t >& lhs ) =
+        Numeric_Type& operator=( const numeric_t& lhs ) =
             default;
         Numeric_Type& operator=( const T& lhs )
         {
-            *this = Numeric_Type< T, Constraint_t >{lhs};
+            *this = numeric_t{lhs};
             return *this;
         }
 
         // Binary arithmetic operator
-        friend Numeric_Type operator+( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator+( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op( lhs.value_,
                                    rhs.value_,
                                    []( auto l, auto r ) { return l + r; } );
         }
-        friend Numeric_Type operator*( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator*( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l * r; } );
         }
-        friend Numeric_Type operator-( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator-( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l - r; } );
         }
-        friend Numeric_Type operator/( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator/( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l / r; } );
         }
-        friend Numeric_Type operator%( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator%( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l % r; } );
         }
 
         // Binary bitwise operator
-        friend Numeric_Type operator<<( Numeric_Type< T, Constraint_t > lhs,
-                                        Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator<<( numeric_t lhs,
+                                        numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l << r; } );
         }
-        friend Numeric_Type operator>>( Numeric_Type< T, Constraint_t > lhs,
-                                        Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator>>( numeric_t lhs,
+                                        numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l >> r; } );
         }
-        friend Numeric_Type operator&( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs )
+        friend Numeric_Type operator&( numeric_t lhs,
+                                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l & r; } );
         }
-        friend Numeric_Type operator^( Numeric_Type< T, Constraint_t > lhs,
-                                       Numeric_Type< T, Constraint_t > rhs ) {
+        friend Numeric_Type operator^( numeric_t lhs,
+                                       numeric_t rhs ) {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l ^ r; } );
         } friend Numeric_Type
-            operator|( Numeric_Type< T, Constraint_t > lhs,
-                       Numeric_Type< T, Constraint_t > rhs )
+            operator|( numeric_t lhs,
+                       numeric_t rhs )
         {
             return lhs.inplace_op(
                 lhs.value_, rhs, []( auto l, auto r ) { return l | r; } );
         }
-        friend constexpr bool operator==( Numeric_Type< T, Constraint_t > lhs,
-                                          Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator==( numeric_t lhs,
+                                          numeric_t rhs )
         {
             return lhs.value_ == rhs.value_;
         }
-        friend constexpr bool operator!=( Numeric_Type< T, Constraint_t > lhs,
-                                          Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator!=( numeric_t lhs,
+                                          numeric_t rhs )
         {
             return lhs.value_ != rhs.value_;
         }
-        friend constexpr bool operator<( Numeric_Type< T, Constraint_t > lhs,
-                                         Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator<( numeric_t lhs,
+                                         numeric_t rhs )
         {
             return lhs.value_ < rhs.value_;
         }
-        friend constexpr bool operator>( Numeric_Type< T, Constraint_t > lhs,
-                                         Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator>( numeric_t lhs,
+                                         numeric_t rhs )
         {
             return lhs.value_ > rhs.value_;
         }
-        friend constexpr bool operator<=( Numeric_Type< T, Constraint_t > lhs,
-                                          Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator<=( numeric_t lhs,
+                                          numeric_t rhs )
         {
             return lhs.value_ <= rhs.value_;
         }
-        friend constexpr bool operator>=( Numeric_Type< T, Constraint_t > lhs,
-                                          Numeric_Type< T, Constraint_t > rhs )
+        friend constexpr bool operator>=( numeric_t lhs,
+                                          numeric_t rhs )
         {
             return lhs.value_ >= rhs.value_;
         }
         friend std::ostream& operator<<( std::ostream& os,
-                                         Numeric_Type< T, Constraint_t > rhs )
+                                         numeric_t rhs )
         {
             os << rhs.value_;
             return os;
         }
         friend std::istream& operator>>( std::istream& is,
-                                         Numeric_Type< T, Constraint_t >& rhs )
+                                         numeric_t& rhs )
         {
             T value;
             is >> value;
-            Numeric_Type< T, Constraint_t > tmp{value};
+            numeric_t tmp{value};
             rhs = tmp;
             return is;
         }
@@ -277,7 +278,7 @@ namespace constrained_types
         value_t inplace_op( value_t lhs, value_t rhs, Op op )
         {
             return constraint_
-                .template inplace_op< Numeric_Type< T, Constraint_t > >(
+                .template inplace_op< numeric_t >(
                     lhs, rhs, op );
         }
 
