@@ -12,6 +12,10 @@ This is done by composing templates types.
 For now, constrained are available only for numeric types :
 ``std::is_arithmetic<T>::value`` must be true for the type.
 
+__This library will evolve (and break compatibility)__
+
+__TODO__ update README
+
 ## How to create a constrained types
 
 To create a constrained type, you just need to create a typedef on the right type.
