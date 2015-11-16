@@ -7,58 +7,59 @@ namespace nfs
 {
 // TODO : add free function
 // TODO : delete T in template ?
-template < typename parent >
+
+template < typename return_type, typename parameter_type >
 struct arthmetic_operator {
-    parent& operator+=( const parent& rhs )
-    {
-        parent::value_ = parent::inplace_op(
-            parent::value_, rhs, []( auto l, auto r ) { return l + r; } );
-    }
-    parent& operator-=( const parent& rhs )
-    {
-        parent::value_ = parent::inplace_op(
-            parent::value_, rhs, []( auto l, auto r ) { return l - r; } );
-    }
-    parent& operator*=( const parent& rhs )
-    {
-        parent::value_ = parent::inplace_op(
-            parent::value_, rhs, []( auto l, auto r ) { return l * r; } );
-    }
-    parent& operator/=( const parent& rhs )
-    {
-        parent::value_ = parent::inplace_op(
-            parent::value_, rhs, []( auto l, auto r ) { return l / r; } );
-    }
-    parent& operator%=( const parent& rhs )
-    {
-        parent::value_ = parent::inplace_op(
-            parent::value_, rhs, []( auto l, auto r ) { return l % r; } );
-    }
-    friend parent operator+( const parent& lhs, const parent& rhs )
-    {
-        return lhs.inplace_op(
-            lhs.value_, rhs.value_, []( auto l, auto r ) { return l + r; } );
-    }
-    friend parent operator*( const parent& lhs, const parent& rhs )
-    {
-        return lhs.inplace_op(
-            lhs.value_, rhs, []( auto l, auto r ) { return l * r; } );
-    }
-    friend parent operator-( const parent& lhs, const parent& rhs )
-    {
-        return lhs.inplace_op(
-            lhs.value_, rhs, []( auto l, auto r ) { return l - r; } );
-    }
-    friend parent operator/( const parent& lhs, const parent& rhs )
-    {
-        return lhs.inplace_op(
-            lhs.value_, rhs, []( auto l, auto r ) { return l / r; } );
-    }
-    friend parent operator%( const parent& lhs, const parent& rhs )
-    {
-        return lhs.inplace_op(
-            lhs.value_, rhs, []( auto l, auto r ) { return l % r; } );
-    }
+    // parent& operator+=( const parent& rhs )
+    //{
+    // parent::value_ = parent::inplace_op(
+    // parent::value_, rhs, []( auto l, auto r ) { return l + r; } );
+    //}
+    // parent& operator-=( const parent& rhs )
+    //{
+    // parent::value_ = parent::inplace_op(
+    // parent::value_, rhs, []( auto l, auto r ) { return l - r; } );
+    //}
+    // parent& operator*=( const parent& rhs )
+    //{
+    // parent::value_ = parent::inplace_op(
+    // parent::value_, rhs, []( auto l, auto r ) { return l * r; } );
+    //}
+    // parent& operator/=( const parent& rhs )
+    //{
+    // parent::value_ = parent::inplace_op(
+    // parent::value_, rhs, []( auto l, auto r ) { return l / r; } );
+    //}
+    // parent& operator%=( const parent& rhs )
+    //{
+    // parent::value_ = parent::inplace_op(
+    // parent::value_, rhs, []( auto l, auto r ) { return l % r; } );
+    //}
+    // friend parent operator+( const parent& lhs, const parent& rhs )
+    //{
+    // return lhs.inplace_op(
+    // lhs.value_, rhs.value_, []( auto l, auto r ) { return l + r; } );
+    //}
+    // friend parent operator*( const parent& lhs, const parent& rhs )
+    //{
+    // return lhs.inplace_op(
+    // lhs.value_, rhs, []( auto l, auto r ) { return l * r; } );
+    //}
+    // friend parent operator-( const parent& lhs, const parent& rhs )
+    //{
+    // return lhs.inplace_op(
+    // lhs.value_, rhs, []( auto l, auto r ) { return l - r; } );
+    //}
+    // friend parent operator/( const parent& lhs, const parent& rhs )
+    //{
+    // return lhs.inplace_op(
+    // lhs.value_, rhs, []( auto l, auto r ) { return l / r; } );
+    //}
+    // friend parent operator%( const parent& lhs, const parent& rhs )
+    //{
+    // return lhs.inplace_op(
+    // lhs.value_, rhs, []( auto l, auto r ) { return l % r; } );
+    //}
 };
 
 template < typename parent >
@@ -199,21 +200,20 @@ struct comparison_operator {
         return lhs.value_ >= rhs.value_;
     }
 };
-template <typename parent>
-struct stream_operator{
-        friend std::ostream& operator<<( std::ostream& os, const parent& rhs )
-        {
-            os << rhs.value_;
-            return os;
-        }
-        friend std::istream& operator>>( std::istream& is, parent& rhs )
-        {
-            typename parent::value_t value;
-            is >> value;
-            const parent& tmp{value};
-            rhs = tmp;
-            return is;
-        }
+template < typename parent >
+struct stream_operator {
+    friend std::ostream& operator<<( std::ostream& os, const parent& rhs )
+    {
+        os << rhs.value_;
+        return os;
+    }
+    friend std::istream& operator>>( std::istream& is, parent& rhs )
+    {
+        typename parent::value_t value;
+        is >> value;
+        const parent& tmp{value};
+        rhs = tmp;
+        return is;
+    }
 };
-
 }  // namespace nfs

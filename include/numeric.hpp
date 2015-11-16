@@ -7,40 +7,43 @@
 #include <functional>
 
 #include "operator.hpp"
+#include "arithmetic_binary_op.hpp"
 
 namespace nfs
 {
 namespace constrained_types
 {
+    // TODO :change parameter order (swap error_handle with constraint_t
     template < typename T,
                template < typename, typename, T... > class constraint_t,
                typename error_handle,
                T... constraint_param >
     class Numeric_Type
-        : arthmetic_operator< Numeric_Type< T,
-                                            constraint_t,
-                                            error_handle,
-                                            constraint_param... > >,
-          bitwise_operator< Numeric_Type< T,
-                                          constraint_t,
-                                          error_handle,
-                                          constraint_param... > >,
-          unary_operator< Numeric_Type< T,
-                                        constraint_t,
-                                        error_handle,
-                                        constraint_param... > >,
-          increment_operator< Numeric_Type< T,
-                                            constraint_t,
-                                            error_handle,
-                                            constraint_param... > >,
-          comparison_operator< Numeric_Type< T,
-                                             constraint_t,
-                                             error_handle,
-                                             constraint_param... > >,
-          stream_operator< Numeric_Type< T,
-                                         constraint_t,
-                                         error_handle,
-                                         constraint_param... > >
+        : binary_operator::multiply< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::add< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::substract< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::divide< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::modulo< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >
 
     {
       public:
@@ -48,13 +51,7 @@ namespace constrained_types
         using numeric_t =
             Numeric_Type< T, constraint_t, error_handle, constraint_param... >;
         using Constraint_t =
-            constraint_t< T, error_handle, constraint_param... >;  // TODO :
-                                                                   // changer
-                                                                   // l'ordre
-                                                                   // des
-                                                                   // templates
-                                                                   // dans
-                                                                   // Constraint
+            constraint_t< T, error_handle, constraint_param... >;
 
         Numeric_Type( T value ) : value_{value}
         {

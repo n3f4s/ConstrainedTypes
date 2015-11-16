@@ -69,8 +69,8 @@ namespace constrained_types
         void check_invariant( T& value ) const
         {
             auto fun = Constraint< T, error_function >::func;
-            if( !( lower_bound < value ) ) error( lower_bound < value, fun );
-            if( !( value < upper_bound ) ) error( value < upper_bound, fun );
+            if( lower_bound >= value ) error( lower_bound < value, fun );
+            if( value >= upper_bound ) error( value < upper_bound, fun );
         }
     };
 
