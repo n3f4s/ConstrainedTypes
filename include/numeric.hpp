@@ -8,6 +8,7 @@
 
 #include "operator.hpp"
 #include "arithmetic_binary_op.hpp"
+#include "bitwise_binary_op.hpp"
 
 namespace nfs
 {
@@ -40,6 +41,31 @@ namespace constrained_types
                                                    constraint_param... >,
                                      T >,
           binary_operator::modulo< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::right_shift< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::left_shift< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::bitwise_and< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::bitwise_or< Numeric_Type< T,
+                                                   constraint_t,
+                                                   error_handle,
+                                                   constraint_param... >,
+                                     T >,
+          binary_operator::bitwise_xor< Numeric_Type< T,
                                                    constraint_t,
                                                    error_handle,
                                                    constraint_param... >,
