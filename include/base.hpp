@@ -16,27 +16,21 @@ namespace constrained_types
 {
     // TODO : change parameter order (swap error_handle with constraint_t
     // TODO : see forward
-    template < typename T,
-               template < typename, typename, T... > class constraint_t,
-               typename error_handle,
-               T... constraint_param >
+    template < typename T, class Constraint_t >
     class Base_Type
     {
       public:
         using value_t = T;
-        using base_t =
-            Base_Type< T, constraint_t, error_handle, constraint_param... >;
-        using Constraint_t =
-            constraint_t< T, error_handle, constraint_param... >;
+        using base_t  = Base_Type< T, Constraint_t >;
+        // Base_Type< T, constraint_t, error_handle, constraint_param... >;
+        // using Constraint_t =
+        // constraint_t< T, error_handle, constraint_param... >;
 
         Base_Type( T value ) : value_{value} { check_invariant(); }
 
-        template < typename std::enable_if< Constraint_t::has_default,
-                                            int >::type t = 0 >
-        Base_Type()
-            : Base_Type{Constraint_t::default_value}
-        {
-        }
+        // template < typename std::enable_if< Constraint_t::has_default,
+        // int >::type t = 0 >
+        Base_Type() : Base_Type{Constraint_t::default_value} {}
 
         Base_Type( const Base_Type& ) = default;
         Base_Type( Base_Type&& ) = default;
@@ -74,11 +68,21 @@ namespace constrained_types
         value_t value_;
         Constraint_t constraint_;
     };
+
     template < typename T,
-               typename base,
+               typename Constraint_t,
                template < typename, typename > class... operators >
-    struct Type : base, operators< base, T >... {
+    struct Type : Base_Type< T, Constraint_t >,
+                  operators< Base_Type< T, Constraint_t >, T >... {
+
+        using base = Base_Type< T, Constraint_t >;
+
         Type( T val ) : base{val} {}
+
+        // TODO : pourquoi ça fail avec enable_if
+        // template < typename std::enable_if< Constraint_t::has_default,
+        // int >::type t = 0 >
+        Type() : base{} { static_assert( Constraint_t::has_default, "This type could not be default constructed" ); }
     };
 }
 }
