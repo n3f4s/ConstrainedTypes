@@ -17,6 +17,14 @@ namespace binary_operator
         {
             return return_type{static_cast< parameter_type >( lhs ) * rhs};
         }
+        friend constexpr return_type& operator*=( return_type& lhs, return_type const& rhs){
+            lhs = lhs * rhs;
+            return lhs;
+        }
+        friend constexpr return_type& operator*=( return_type& lhs, parameter_type const& rhs){
+            lhs = lhs * rhs;
+            return lhs;
+        }
     };
 
     template < typename return_type, typename parameter_type >
@@ -31,6 +39,18 @@ namespace binary_operator
                                                 parameter_type const& rhs )
         {
             return return_type{static_cast< parameter_type >( lhs ) + rhs};
+        }
+        friend constexpr return_type& operator+=( return_type& lhs,
+                                                return_type const& rhs )
+        {
+            lhs = lhs + rhs;
+            return lhs;
+        }
+        friend constexpr return_type& operator+=( return_type& lhs,
+                                                parameter_type const& rhs )
+        {
+            lhs = lhs + rhs;
+            return lhs;
         }
     };
 
@@ -47,6 +67,18 @@ namespace binary_operator
         {
             return return_type{static_cast< parameter_type >( lhs ) - rhs};
         }
+        friend constexpr return_type& operator-=( return_type& lhs,
+                                                return_type const& rhs )
+        {
+            lhs = lhs - rhs;
+            return lhs;
+        }
+        friend constexpr return_type& operator-=( return_type& lhs,
+                                                parameter_type const& rhs )
+        {
+            lhs = lhs - rhs;
+            return lhs;
+        }
     };
 
     template < typename return_type, typename parameter_type >
@@ -62,14 +94,44 @@ namespace binary_operator
         {
             return return_type{static_cast< parameter_type >( lhs ) / rhs};
         }
+        friend constexpr return_type& operator/=( return_type& lhs,
+                                                return_type const& rhs )
+        {
+            lhs = lhs / rhs;
+            return lhs;
+        }
+        friend constexpr return_type& operator/=( return_type& lhs,
+                                                parameter_type const& rhs )
+        {
+            lhs = lhs / rhs;
+            return lhs;
+        }
     };
 
     template < typename return_type, typename parameter_type >
     struct modulo {
         friend constexpr return_type operator%( return_type const& lhs,
+                                                return_type const& rhs )
+        {
+            return return_type{static_cast< parameter_type >( lhs ) %
+                               static_cast< parameter_type >( rhs )};
+        }
+        friend constexpr return_type operator%( return_type const& lhs,
                                                 parameter_type const& rhs )
         {
             return return_type{static_cast< parameter_type >( lhs ) % rhs};
+        }
+        friend constexpr return_type& operator%=( return_type& lhs,
+                                                return_type const& rhs )
+        {
+            lhs = lhs % rhs;
+            return lhs;
+        }
+        friend constexpr return_type& operator%=( return_type& lhs,
+                                                parameter_type const& rhs )
+        {
+            lhs = lhs % rhs;
+            return lhs;
         }
     };
 
