@@ -17,21 +17,21 @@ namespace constrained_types
     // TODO : see forward
     /**
      * @brief base class for constrained type
+     *
+     * \tparam T type to be constrained
+     * \tparam Constraint_t constraint to apply to T
      */
     template < typename T, class Constraint_t >
     class Base_Type
     {
       public:
+        /// alias for T
         using value_t = T;
-        using base_t  = Base_Type< T, Constraint_t >;
-        // Base_Type< T, constraint_t, error_handle, constraint_param... >;
-        // using Constraint_t =
-        // constraint_t< T, error_handle, constraint_param... >;
+        /// alias for Base<T, Constraint_t>
+        using base_t = Base_Type< T, Constraint_t >;
 
         Base_Type( T value ) : value_{value} { check_invariant(); }
 
-        // template < typename std::enable_if< Constraint_t::has_default,
-        // int >::type t = 0 >
         Base_Type() : Base_Type{Constraint_t::default_value} {}
 
         Base_Type( const Base_Type& ) = default;

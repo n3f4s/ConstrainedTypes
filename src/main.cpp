@@ -28,6 +28,7 @@ using angle = Type< int,
 
 using test_type = Type< std::string, Regex_Constraint >;
 
+// TODO : doc && test
 int main()
 {
     test_type t{"Hello World"};
