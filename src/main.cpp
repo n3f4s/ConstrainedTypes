@@ -14,7 +14,7 @@ struct Regex_Constraint : Constraint< std::string, invariant_checker > {
     static constexpr bool has_default = false;
     void check_invariant( std::string& value ) const
     {
-        std::regex reg(".*Hello.*");
+        std::regex reg( ".*Hello.*" );
         auto fun = Constraint< std::string, invariant_checker >::func;
         if( !std::regex_match( value, reg ) )
             error( std::regex_match( value, reg ), fun );

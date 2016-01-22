@@ -16,6 +16,9 @@ namespace constrained_types
 {
     // TODO : change parameter order (swap error_handle with constraint_t
     // TODO : see forward
+    /**
+     * @brief base class for constrained type
+     */
     template < typename T, class Constraint_t >
     class Base_Type
     {
@@ -69,6 +72,9 @@ namespace constrained_types
         Constraint_t constraint_;
     };
 
+    /**
+     * @brief wrapper for Base_Type
+     */
     template < typename T,
                typename Constraint_t,
                template < typename, typename > class... operators >
@@ -82,7 +88,11 @@ namespace constrained_types
         // TODO : pourquoi ça fail avec enable_if
         // template < typename std::enable_if< Constraint_t::has_default,
         // int >::type t = 0 >
-        Type() : base{} { static_assert( Constraint_t::has_default, "This type could not be default constructed" ); }
+        Type() : base{}
+        {
+            static_assert( Constraint_t::has_default,
+                           "This type could not be default constructed" );
+        }
     };
 }
 }
