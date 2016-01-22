@@ -30,6 +30,7 @@ namespace constrained_types
         /// alias for Base<T, Constraint_t>
         using base_t = Base_Type< T, Constraint_t >;
 
+        /// Ctor with value (not explicit)
         Base_Type( T value ) : value_{value} { check_invariant(); }
 
         Base_Type() : Base_Type{Constraint_t::default_value} {}
@@ -37,8 +38,10 @@ namespace constrained_types
         Base_Type( const Base_Type& ) = default;
         Base_Type( Base_Type&& ) = default;
 
+        /// explicit conversion to T
         explicit constexpr operator T() const { return value_; }
 
+        /// explicit conversion to bol
         explicit constexpr operator bool() const
         {
             return static_cast< bool >( value_ );
@@ -72,7 +75,15 @@ namespace constrained_types
     };
 
     /**
-     * @brief wrapper for Base_Type
+     * @brief Constrained type (designed to be used)
+     *
+     * This type is the type to use for adding constraint to a type.
+     * It is composable (with template) to add constraint and (optional)
+     * operators
+     *
+     * \tparam T type to be constraint
+     * \tparam Constraint_t constraint to add to the type
+     * \tparam operators operator available for the (constrained) type
      */
     template < typename T,
                typename Constraint_t,
@@ -84,7 +95,7 @@ namespace constrained_types
 
         Type( T val ) : base{val} {}
 
-        // TODO : pourquoi ça fail avec enable_if
+        // TODO : find why it don't work with enable_if
         // template < typename std::enable_if< Constraint_t::has_default,
         // int >::type t = 0 >
         Type() : base{}
