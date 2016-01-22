@@ -6,7 +6,6 @@
 #include <iostream>
 #include <functional>
 
-#include "operator.hpp"
 #include "arithmetic_binary_op.hpp"
 #include "bitwise_binary_op.hpp"
 
