@@ -8,7 +8,7 @@ set(SRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(GLOB SRC ${SRCDIR}/*.cpp)
 #message("srcs : ${SRC}")
 
-include_directories("${PROJECT_BINARY_DIR}/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wshadow -std=c++1y -pipe -fdiagnostics-color=auto")

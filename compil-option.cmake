@@ -14,7 +14,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang"
- OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using Clang or gcc
     add_flag(CMAKE_CXX_FLAGS         -std=c++1z)
     add_flag(CMAKE_CXX_FLAGS         -Wall)
@@ -29,6 +29,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     add_flag(CMAKE_CXX_FLAGS_RELEASE -s)
     add_flag(CMAKE_CXX_FLAGS_RELEASE -O2)
     add_flag(CMAKE_CXX_FLAGS_RELEASE -DNDEBUG)
+    add_flag(CMAKE_CXX_FLAGS_RELEASE -flto)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # using Visual Studio C++
 endif()
