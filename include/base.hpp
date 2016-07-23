@@ -15,7 +15,7 @@ namespace constrained_types {
     // TODO : see forward
     // TODO : conversion operator, default ctor, assignement operator ... only if underlying type has it
     /**
-     * @brief base class for constrained type
+     * @brief Base class for constrained type
      *
      * \tparam T type to be constrained
      * \tparam Constraint_t constraint to apply to T
@@ -34,7 +34,7 @@ namespace constrained_types {
         {
             check_invariant();
         }
-        Base_Type(const T&& value)
+        Base_Type(const T& value)
             : value_{ value }
         {
             check_invariant();
