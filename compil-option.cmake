@@ -1,4 +1,5 @@
 include(CheckCXXCompilerFlag)
+include("TargetArch.cmake")
 function(add_flag var flag)
     check_cxx_compiler_flag(${flag} HAS_FLAG)
     if(HAS_FLAG)
@@ -13,6 +14,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+target_architecture(ARCH)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang"
         OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using Clang or gcc
@@ -24,8 +27,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     add_flag(CMAKE_CXX_FLAGS         -pipe)
     add_flag(CMAKE_CXX_FLAGS         -fdiagnostics-color=always)
     add_flag(CMAKE_CXX_FLAGS_DEBUG   -g)
-    add_flag(CMAKE_CXX_FLAGS_DEBUG   -Og)
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        add_flag(CMAKE_CXX_FLAGS_DEBUG   -Og)
+    endif()
     add_flag(CMAKE_CXX_FLAGS_DEBUG   -fsanitize=address)
+    if(NOT ${ARCH} STREQUAL "unknown"
+            AND NOT ${ARCH} STREQUAL "i386")
+        add_flag(CMAKE_CXX_FLAGS_DEBUG   -fsanitize=memory) # undefined for i686
+    endif()
+    add_flag(CMAKE_CXX_FLAGS_DEBUG   -fsanitize=undefined)
+    add_flag(CMAKE_CXX_FLAGS_DEBUG   -D_GLICXX_DEBUG)
     add_flag(CMAKE_CXX_FLAGS_RELEASE -s)
     add_flag(CMAKE_CXX_FLAGS_RELEASE -O2)
     add_flag(CMAKE_CXX_FLAGS_RELEASE -DNDEBUG)
