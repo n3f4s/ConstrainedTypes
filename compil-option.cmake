@@ -20,6 +20,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang"
         OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using Clang or gcc
     add_flag(CMAKE_CXX_FLAGS         -std=c++1z)
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_flag(CMAKE_CXX_FLAGS         -fconcepts)
+    add_flag(CMAKE_CXX_FLAGS         -DHASCONCEPT)
+    endif()
     add_flag(CMAKE_CXX_FLAGS         -Wall)
     add_flag(CMAKE_CXX_FLAGS         -Wextra)
     add_flag(CMAKE_CXX_FLAGS         -pedantic)

@@ -8,63 +8,132 @@
 
 #include "arithmetic_binary_op.hpp"
 #include "bitwise_binary_op.hpp"
+#include "constrain.hpp"
+
+/**
+ * @file base.hpp
+ * @brief Provide type to be aliased for creating new constrained type.
+ * @author Vincent
+ * @version 0.1
+ * @date 2016-07-23
+ */
+
+#ifdef HASCONCEPT
+#define REQUIRES(concept) requires concept
+#else
+#define REQUIRES(concept) // use enable_if
+#endif                    /* ifndef  */
+
+// TODO : use concept -> define concept for contraint
+// TODO : doc
 
 namespace nfs {
 namespace constrained_types {
-    // TODO : change parameter order (swap error_handle with constraint_t
     // TODO : see forward
-    // TODO : conversion operator, default ctor, assignement operator ... only if underlying type has it
     /**
-     * @brief Base class for constrained type
+     * @brief Base class for constrained type.
      *
-     * \tparam T type to be constrained
-     * \tparam Constraint_t constraint to apply to T
+     * This class tie together the constraint and the value type.
+     * It contains all the boilerplate required to ensure that the constraint
+     * is always respected.
+     *
+     * Define a way to construct a constrained type
+     *
+     * @tparam T type to be constrained
+     * @tparam Constraint_t constraint to apply to T
      */
     template <typename T, class Constraint_t>
+        REQUIRES(Is_Constraint_Type<Constraint_t>())
     class Base_Type {
     public:
         /// alias for T
         using value_t = T;
         /// alias for Base<T, Constraint_t>
         using base_t = Base_Type<T, Constraint_t>;
+        template <typename S>
+        using is_bool_convertible = std::is_convertible<S, bool>;
 
-        /// Ctor with value (not explicit)
+        /**
+         * @brief Constructor for Base_type
+         *
+         * @param value value of the object
+         */
         Base_Type(T&& value)
             : value_{ value }
         {
             check_invariant();
         }
+
+        /**
+         * @brief Constructor overloaded for const reference
+         *
+         * @fixme should not be necessary with universal reference
+         *
+         * @param value value of the object
+         */
         Base_Type(const T& value)
             : value_{ value }
         {
             check_invariant();
         }
 
+        /**
+         * @brief Default constructor
+         */
+        template <typename S = void>
+        REQUIRES(Constraint_t::has_default&& std::is_default_constructible<T>::value)
         Base_Type()
             : Base_Type{ Constraint_t::default_value }
         {
         }
 
-        Base_Type(const Base_Type&) = default;
-        Base_Type(Base_Type&&) = default;
+        // if is_default_copyable
+        template <typename S = void>
+        REQUIRES(std::is_copy_constructible<T>::value)
+        Base_Type(const Base_Type& t)
+            : value_{ t.value_ }
+        {
+            check_invariant();
+        }
+        template <typename S = void>
+        REQUIRES(std::is_move_constructible<T>::value)
+        Base_Type(Base_Type&& t)
+            : value_{ std::move(t.value_) }
+        {
+            check_invariant();
+        }
 
         /// explicit conversion to T
         explicit constexpr operator T() const { return value_; }
 
         /// explicit conversion to bol
+        template <typename S = void>
+        REQUIRES(is_bool_convertible<T>::value)
         explicit constexpr operator bool() const
         {
             return static_cast<bool>(value_);
         }
 
-        // TODO : put in an operator struct ?
-        Base_Type& operator=(const base_t& lhs) = default;
-        Base_Type& operator=(base_t&& lhs) = default;
+        template <typename S = void>
+        REQUIRES(std::is_copy_assignable<T>::value)
+        Base_Type& operator=(const base_t& lhs){
+            *this = std::move(lhs);
+            return *this;
+        }
+        template <typename S = void>
+        REQUIRES(std::is_move_assignable<T>::value)
+        Base_Type& operator=(base_t&& lhs) {
+            *this = std::move(lhs);
+            return *this;
+        }
+
+        /// assignement from T
         Base_Type& operator=(const T& lhs)
         {
             *this = std::move(base_t{ lhs });
             return *this;
         }
+        /// assignement from T
         Base_Type& operator=(T&& lhs)
         {
             *this = std::move(base_t{ std::move(lhs) });
@@ -87,35 +156,46 @@ namespace constrained_types {
     /**
      * @brief Constrained type (designed to be used)
      *
-     * This type is the type to use for adding constraint to a type.
-     * It is composable (with template) to add constraint and (optional)
-     * operators
+     * Type to used to create constrained type.
+     * Inherit from Base_Type to provide a better interface for
+     * creating a constrained type that can perform operations.
      *
-     * \tparam T type to be constraint
-     * \tparam Constraint_t constraint to add to the type
-     * \tparam operators operator available for the (constrained) type
+     * Use template composition to make it able to perform some operation,
+     * like arithmetic operation ...
+     *
+     * @tparam T type to be constrained
+     * @tparam Constraint_t constraint to add to the type
+     * @tparam operators operator available for the (constrained) type
+     *
+     * example of type creation
+     * @code{.cpp}
+using angle = Type<int,
+    Strict_Range<int, invariant_checker, -1, 361>,
+    arithmetic_operator,
+    bitwise_operator>;
+     * @endcode
      */
     template <typename T,
         typename Constraint_t,
         template <typename, typename> class... operators>
+        REQUIRES(Is_Constraint_Type<Constraint_t>())
     struct Type : Base_Type<T, Constraint_t>,
                   operators<Base_Type<T, Constraint_t>, T>... {
 
         using base = Base_Type<T, Constraint_t>;
 
+        /// Constructor with value
         Type(T val)
             : base{ val }
         {
         }
 
-        // TODO : find why it don't work with enable_if
-        // template < typename std::enable_if< Constraint_t::has_default,
-        // int >::type t = 0 >
+        /// Default constructor
+        template <typename S = void>
+        REQUIRES(Constraint_t::has_default&& std::is_default_constructible<T>::value)
         Type()
             : base{}
         {
-            static_assert(Constraint_t::has_default,
-                "This type could not be default constructed");
         }
     };
 }
